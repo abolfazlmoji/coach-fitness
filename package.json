@@ -1,0 +1,55 @@
+const { Client, LocalAuth } = require('whatsapp-web.js');
+const qrcode = require('qrcode-terminal');
+
+const client = new Client({
+    authStrategy: new LocalAuth()
+});
+
+client.on('qr', qr => {
+    qrcode.generate(qr, {small: true});
+});
+
+client.on('ready', () => {
+    console.log('ربات آماده است ✅');
+});
+
+let userSteps = {};
+
+client.on('message', async msg => {
+    const chatId = msg.from;
+
+    if (!userSteps[chatId]) {
+        userSteps[chatId] = { step: 1, data: {} };
+        await msg.reply("سلام! خوش اومدی 😊\nبرای شروع چند سوال می‌پرسم.");
+        await msg.reply("۱) سنت چند ساله است؟");
+        return;
+    }
+
+    let step = userSteps[chatId].step;
+
+    if (step === 1) {
+        userSteps[chatId].data.age = msg.body;
+        userSteps[chatId].step++;
+        msg.reply("۲) وزنت چند کیلوگرم است؟");
+    } else if (step === 2) {
+        userSteps[chatId].data.weight = msg.body;
+        userSteps[chatId].step++;
+        msg.reply("۳) قدت چند سانتی‌متر است؟");
+    } else if (step === 3) {
+        userSteps[chatId].data.height = msg.body;
+        userSteps[chatId].step++;
+        msg.reply("۴) آیا آسیب یا ناهنجاری جسمی داری؟ (ندارم/توضیح بده)");
+    } else if (step === 4) {
+        userSteps[chatId].data.injury = msg.body;
+        userSteps[chatId].step++;
+        msg.reply("۵) این اولین برنامه‌ای هست که از من می‌گیری یا برنامه چندمه؟");
+    } else if (step === 5) {
+        userSteps[chatId].data.programHistory = msg.body;
+        userSteps[chatId].step++;
+        msg.reply("✅ ممنون! حالا لطفاً هزینه رو پرداخت کن و رسید رو بفرست.");
+    } else {
+        msg.reply("اطلاعاتت ثبت شد، به زودی برنامه‌ات آماده میشه.");
+    }
+});
+
+client.initialize();
