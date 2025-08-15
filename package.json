@@ -1,17 +1,11 @@
 {
   "name": "coach-fitness",
   "version": "1.0.0",
-  "description": "A simple fitness coach bot with WhatsApp Web.js and Express",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "whatsapp-web.js": "^1.21.0",
-    "qrcode-terminal": "^0.12.0"
-  },
-  "engines": {
-    "node": "18.x"
+    "express": "^4.18.2"
   }
 }
